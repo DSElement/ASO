@@ -1,0 +1,1 @@
+.\\prop_dir\\prop_text.txt

@@ -26,9 +26,11 @@ int main() {
 
     char *fileContent = NULL;
     char chunk[CHUNK_SIZE];
+    size_t currentLength = 0;
+
     while (fgets(chunk, sizeof(chunk), file) != NULL) {
-        size_t currentLength = fileContent ? strlen(fileContent) : 0;
         size_t chunkLength = strlen(chunk);
+
         char *newContent = realloc(fileContent, currentLength + chunkLength + 1);
         if (newContent == NULL) {
             perror("Memory allocation failed");
@@ -36,11 +38,15 @@ int main() {
             fclose(file);
             return EXIT_FAILURE;
         }
+
         fileContent = newContent;
-        strcat(fileContent, chunk);
+        memcpy(fileContent + currentLength, chunk, chunkLength + 1);
+        currentLength += chunkLength;
     }
 
-    printf("%s", fileContent);
+    if (fileContent != NULL) {
+        printf("%s", fileContent);
+    }
 
     free(fileContent);
     fclose(file);
